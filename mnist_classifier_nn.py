@@ -21,8 +21,8 @@ def preprocess_image_data(data, train_percentage):
     np.random.shuffle(data)
 
     # Take 80% of data for trianing the neural entwork.
-    train_data = data[0:int(train_percentage*m), :]
-    validation_data = data[int(train_percentage*m):m, :]
+    train_data = data[0:int(train_percentage * m), :]
+    validation_data = data[int(train_percentage * m):m, :]
 
     # Remove index column, scale, and transpose image data to organise by columns.
     X_train, Y_train = extract_and_normalise_data(train_data)
@@ -61,11 +61,11 @@ def one_hot_converter(Y):
 def backward_propagation(W1, B1, W2, B2, Z1, A1, Z2, A2, X, Y, m):
     one_hot_Y = one_hot_converter(Y)
     dZ2 = A2 - one_hot_Y
-    dW2 = 1/m * dZ2.dot(A1.T)
-    dB2 = 1/m * np.sum(dZ2)
-    dZ1 = 1/m * W2.T.dot(dZ2) * (Z1 > 0)
-    dW1 = 1/m * dZ1.dot(X.T)
-    dB1 = 1/m * np.sum(dZ1)
+    dW2 = 1 / m * dZ2.dot(A1.T)
+    dB2 = 1 / m * np.sum(dZ2)
+    dZ1 = W2.T.dot(dZ2) * (Z1 > 0)
+    dW1 = 1 / m * dZ1.dot(X.T)
+    dB1 = 1 / m * np.sum(dZ1)
     return dW1, dB1, dW2, dB2
 
 def update_parameters(W1, B1, W2, B2, dW1, dB1, dW2, dB2, learning_rate):
@@ -101,4 +101,4 @@ if __name__ == "__main__":
     file_name = 'train.csv'
     training_data = pd.read_csv(os.path.join(__location__, file_name))
     X_train, Y_train, X_validation, Y_validation, m = preprocess_image_data(training_data, 0.8)
-    W1, B1, W2, B2 = gradient_descent(X_train, Y_train, 0.1, 10000, m)
+    W1, B1, W2, B2 = gradient_descent(X_train, Y_train, 0.1, 1000, m)
