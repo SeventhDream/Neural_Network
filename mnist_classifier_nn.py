@@ -83,22 +83,62 @@ def get_accuracy(predictions, Y):
 
 def gradient_descent(X, Y, alpha, iterations, m):
     W1, B1, W2, B2 = initialise_random_parameters()
-
+    Accuracy  = []
     for i in range(iterations):
         Z1, A1, Z2, A2 = forward_propagation(W1, B1, W2, B2, X)
         dW1, dB1, dW2, dB2 = backward_propagation(W1, B1, W2, B2, Z1, A1, Z2, A2, X, Y, m)
         W1, B1, W2, B2 = update_parameters(W1, B1, W2, B2, dW1, dB1, dW2, dB2, alpha)
-
+        Accuracy.append(get_accuracy(get_predictions(A2), Y))
         if (i%20) == 0:
             print("Iteration number: " + str(i))
             print("Accuracy = " + str(get_accuracy(get_predictions(A2), Y)))
             
-    return W1, B1, W2, B2
+    return W1, B1, W2, B2, Accuracy
+
+def plot_data(x_data, x_label, y_data, y_label, title):
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(x_data, y_data)
+    
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.grid(True)
+    plt.savefig(os.path.join(__location__, 'training_plot.png'))
+    plt.show()
 
 if __name__ == "__main__":
+    
+    iterations = 2000
+    learning_rate = 0.1
+
     # Read training image data from csv file.
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     file_name = 'train.csv'
     training_data = pd.read_csv(os.path.join(__location__, file_name))
+
+    # Shuffle and separate data into training and validation data sets. 
     X_train, Y_train, X_validation, Y_validation, m = preprocess_image_data(training_data, 0.8)
-    W1, B1, W2, B2 = gradient_descent(X_train, Y_train, 0.1, 1000, m)
+    
+    # Train the neural network.
+    W1, B1, W2, B2, accuracy = gradient_descent(X_train, Y_train, learning_rate, iterations, m)
+    
+    # Plot training accuracy over iterations.
+    plot_data(list(range(0,iterations)), "Epochs", accuracy, "Accuracy (%)", "Training Data")
+
+# Validate manually using single image from validation data set.
+# val_index = 0
+# Z1val, A1val, Z2val, A2val = forward_propagation(W1, B1, W2, B2, X_validation[:,val_index, None])
+# print("Predicted Label: ", get_predictions(A2val))
+# print("Actual label: ", Y_validation[val_index])
+
+# Visualise single validation image.
+# image_array = X_validation[:, val_index].reshape(28,28)
+# plt.imshow(image_array, cmap='gray')
+# plt.show()
+
+# Validate trained neural netwrok on validation data set.
+Z1val, A1val, Z2val, A2val = forward_propagation(W1, B1, W2, B2, X_validation)
+validation_accuracy = get_accuracy(get_predictions(A2val),Y_validation)
+print("Validation Accuracy: ", validation_accuracy)
+
