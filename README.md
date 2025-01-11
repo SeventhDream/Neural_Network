@@ -50,7 +50,8 @@ $-> W_1 = \frac{1}{m}dZ_1A_0^T = \frac{1}{m}W_2^TdZ_2 * ReLU^{'}(Z_1)A_0^T = \fr
 $-> dB_1 = \frac{1}{m}\sum dZ_1 = \frac{1}{m}\sum W_2^T(A_2 - Y) * ReLU^{'}(Z_1)$
 
 ## Plot Output
-- Neural network model achieves a classification accuracy of 88.9% during training and 88.9% during final validation step. 
+- Neural network model achieves a classification accuracy of 89.9% during training for 2000 iterations and 88.9% accuracy when tested aghainst validation dataset.
+  - Further tuning required to further increase accuracy to desirable threshold (>99.5%). 
 ![Training Accuracy Plot](https://github.com/SeventhDream/Neural_Network/blob/main/training_plot.png?raw=true)
 
 
